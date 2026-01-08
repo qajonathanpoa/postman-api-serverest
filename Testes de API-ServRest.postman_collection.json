@@ -1,0 +1,303 @@
+{
+	"info": {
+		"_postman_id": "ed15a84a-1398-4506-baea-10653c2ef2e2",
+		"name": "Testes de API-ServRest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11251799",
+		"_collection_link": "https://sis-safepag-190056.postman.co/workspace/Sicred-TESTE~68b86551-71c1-43ff-840d-a5c83d45cedf/collection/11251799-ed15a84a-1398-4506-baea-10653c2ef2e2?action=share&source=collection_link&creator=11251799"
+	},
+	"item": [
+		{
+			"name": "Usuarios",
+			"item": [
+				{
+					"name": "Listar usuários cadastrados",
+					"item": [
+						{
+							"name": "Buscar usuário por nome específico-Cenário Positivo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code é 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Validar se o filtro por nome funcionou\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    // Verifica se todos os usuários retornados possuem o nome pesquisado\r",
+											"    jsonData.usuarios.forEach(usuario => {\r",
+											"        pm.expect(usuario.nome).to.include(\"Joaquim da Silva\");\r",
+											"    });\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Validar que a quantidade corresponde ao tamanho da lista\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.usuarios.length).to.eql(jsonData.quantidade);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_teste}}/usuarios?nome=Joaquim da Silva",
+									"host": [
+										"{{url_teste}}"
+									],
+									"path": [
+										"usuarios"
+									],
+									"query": [
+										{
+											"key": "nome",
+											"value": "Joaquim da Silva"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Cadastrar usuário",
+					"item": [
+						{
+							"name": "Cadastrar usuário com sucesso - Cenário Positivo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// 1. Validar Status Code 201 (Created)\r",
+											"pm.test(\"Status code é 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"// 2. Validar mensagem de sucesso\r",
+											"pm.test(\"Validar mensagem de cadastro realizado\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Cadastro realizado com sucesso\");\r",
+											"});\r",
+											"\r",
+											"// 3. Validar se o ID foi gerado e não está vazio\r",
+											"pm.test(\"Validar se retornou o ID do novo usuário\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData._id).to.not.be.null;\r",
+											"    pm.expect(jsonData._id).to.be.a('string');\r",
+											"    pm.environment.set(\"usuario_id\", jsonData._id);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": \"Joaquim da Silveira\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"pwd123\",\r\n  \"administrador\": \"true\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_teste}}/usuarios",
+									"host": [
+										"{{url_teste}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Buscar usuario por ID",
+					"item": [
+						{
+							"name": "Buscar usuário por um ID existente - Cenário Positivo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// 1. Validar Status Code 200 (OK)\r",
+											"pm.test(\"Status code é 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"// 2. Validar se os dados retornados batem com o esperado\r",
+											"pm.test(\"Validar se o ID retornado é o mesmo enviado na URL\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    // Compara o ID do corpo da resposta com a variável que usamos na URL\r",
+											"    pm.expect(jsonData._id).to.eql(pm.environment.get(\"usuario_id\"));\r",
+											"});\r",
+											"\r",
+											"// 3. Validar se o corpo contém informações básicas do usuário\r",
+											"pm.test(\"Validar presença de campos obrigatórios do usuário\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.have.property('nome');\r",
+											"    pm.expect(jsonData).to.have.property('email');\r",
+											"    pm.expect(jsonData.administrador).to.be.oneOf([\"true\", \"false\"]);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_teste}}/usuarios/{{usuario_id}}",
+									"host": [
+										"{{url_teste}}"
+									],
+									"path": [
+										"usuarios",
+										"{{usuario_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Editar usuário",
+					"item": [
+						{
+							"name": "Editar um usuário com sucesso - Cenário Positivo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// 1. Validar Status Code 200 (OK)\r",
+											"pm.test(\"Status code é 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"// 2. Validar mensagem de sucesso na alteração\r",
+											"pm.test(\"Validar mensagem de registro alterado\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Registro alterado com sucesso\");\r",
+											"});\r",
+											"\r",
+											"// 3. Validar tempo de resposta\r",
+											"pm.test(\"Tempo de resposta amigável (abaixo de 300ms)\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nome\": \"{{$randomFullName}}\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"pwd123\",\r\n    \"administrador\": \"true\"\r\n    \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_teste}}/usuarios/{{usuario_id}}",
+									"host": [
+										"{{url_teste}}"
+									],
+									"path": [
+										"usuarios",
+										"{{usuario_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Excluir usuário",
+					"item": [
+						{
+							"name": "Excluir um usuário com sucesso - Cenário Positivo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// 1. Validar Status Code 200 (OK)\r",
+											"pm.test(\"Status code é 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"// 2. Validar mensagem de exclusão realizada\r",
+											"pm.test(\"Validar mensagem de registro excluído\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Registro excluído com sucesso\");\r",
+											"});\r",
+											"\r",
+											"// 3. Limpar a variável de ambiente (opcional, para organização)\r",
+											"pm.environment.unset(\"usuario_id\");"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_teste}}/usuarios/{{usuario_id}}",
+									"host": [
+										"{{url_teste}}"
+									],
+									"path": [
+										"usuarios",
+										"{{usuario_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
