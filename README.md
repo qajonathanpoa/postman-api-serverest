@@ -1,18 +1,18 @@
 # postman-api-serverest
-# 🚀 Testes de API - ServeRest (Módulo 13 - EBAC)
+# Testes de API - ServeRest (Módulo 13 - EBAC)
 
 Este repositório contém os testes automatizados da API **ServeRest**, desenvolvidos como parte da atividade prática do curso de Qualidade de Software da EBAC. O foco principal foi a funcionalidade de **Usuários**.
 
-## 📌 Objetivo do Projeto
+## Objetivo do Projeto
 Validar os endpoints da funcionalidade de usuários, garantindo que as regras de negócio (cenários positivos e negativos) estejam sendo cumpridas através de asserções automatizadas no **Postman**.
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 * [Postman](https://www.postman.com/) - Ferramenta de teste de API.
 * [Node.js](https://nodejs.org/) - Ambiente de execução para rodar o ServeRest localmente.
 * [ServeRest](https://serverest.dev/) - API simulada para testes de e-commerce.
 * [JavaScript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript) - Linguagem utilizada para os scripts de teste.
 
-## 🧪 Cenários de Teste Mapeados
+## Cenários de Teste Mapeados
 
 ### **Endpoint: /usuarios**
 * **GET - Listar Usuários:** - [x] Listagem completa de usuários.
@@ -30,7 +30,7 @@ Validar os endpoints da funcionalidade de usuários, garantindo que as regras de
     - [x] Sucesso na exclusão.
     - [x] Validação quando nenhum registro é excluído.
 
-## 🚀 Como rodar os testes
+## Como rodar os testes
 
 1. **Instale o ServeRest localmente:**
    ```bash
